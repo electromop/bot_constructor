@@ -40,3 +40,6 @@ WantedBy=multi-user.target'''
     def restart_service(self, service_name):
         result = os.system(f"systemctl start {service_name}")
         return result
+    
+    # def add_catalog(self, catalogDict):
+

@@ -7,7 +7,7 @@ class Handler:
         handler_string = f'''
 #{self.key_word}
 @bot.message_handler(commands=['{self.key_word}'])
-def send_message(message):
+def {self.key_word}(message):
     bot.send_message(message.chat.id, "{message_text}")
 #{self.key_word}_end
 '''
