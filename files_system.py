@@ -38,5 +38,5 @@ WantedBy=multi-user.target'''
         return result
     
     def restart_service(self, service_name):
-        result = os.system(f"systemctl start {service_name}")
+        result = os.system(f"systemctl restart {service_name}")
         return result
