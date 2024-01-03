@@ -39,9 +39,10 @@ bot = telebot.Bot(bot_token)
         bot_text = bot_file.read()
         bot_file.close()
 
-        to_delete = bot_text[bot_text.find(f"#{command}"):bot_text.find(f"#{command}_end") + len(command) + 5]
+        to_edit = bot_text[bot_text.find(f"#{command}"):bot_text.find(f"#{command}_end") + len(command) + 5]
+        new_text = self.add_simple_handler(command, text)
 
-        new_bot_text = bot_text.replace(to_delete, "")
+        new_bot_text = bot_text.replace(to_edit, new_text)
 
         bot_file = open(self.bot_path, "w")
         bot_file.write(new_bot_text)
