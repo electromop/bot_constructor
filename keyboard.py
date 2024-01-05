@@ -10,8 +10,8 @@ class Keyboard:
             button_dict[i] = {'text':i, 'callback':i}
         
         return f'''button_dict = {button_dict}
-        buttons = [
-        types.InlineKeyboardButton(button_dict[button]['text'], callback_data=button_dict[button]['callback']) for button in button_dict
-        ]
-        markup = types.InlineKeyboardMarkup(row_width={self.ncol})
-        markup.add(*buttons)'''
+    buttons = [
+    types.InlineKeyboardButton(button_dict[button]['text'], callback_data=button_dict[button]['callback']) for button in button_dict
+    ]
+    markup = types.InlineKeyboardMarkup(row_width={self.ncol})
+    markup.add(*buttons)'''
