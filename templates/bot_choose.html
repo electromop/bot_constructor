@@ -15,15 +15,29 @@
 <body>
     <div class="container mt-3">
         <div class="row">
+            <h1>Привет {{username}}!</h1>
+        </div>
+        <div class="row">
             <div class="col-6 left-panel">
-                <h1>Добавить нового бота</h1>
+                <h2>Добавить нового бота</h2>
                 <form id="addBotForm">
                     <input type="text" id="botToken" class="form-control mb-2" placeholder="Введите токен бота">
                     <button class="btn btn-primary mb-3" onclick="addNewBot()">Добавить</button>
                 </form>
             </div>
             <div class="col-6">
-                <h1>Ваши боты</h1>
+                <h2>Ваши боты</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Bot Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="botTableBody">
+                        <!-- Здесь будет построена таблица данных -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -34,7 +48,31 @@
                 .then(response => response.text())
                 .then(data => console.log(data))
                 .catch(error => console.error('Ошибка:', error));
+            
+            populateBotTable();
             return false;
         }
+        async function populateBotTable() {
+                    try {
+                        const response = await fetch('/get_user_bots', { credentials: 'same-origin' });
+                        if (!response.ok) {
+                            throw new Error('Unauthorized');
+                        }
+                        const data = await response.json();
+                        console.log(data);
+                        let botTableBody = document.getElementById('botTableBody');
+                        data.forEach(bot => {
+                            let row = botTableBody.insertRow();
+                            let nameCell = row.insertCell(0);
+                            let actionCell = row.insertCell(1);
+                            nameCell.innerHTML = bot;
+                            actionCell.innerHTML = '<a href="/'+ bot + '"><button class="btn btn-primary">Go to Bot</button></a>';
+                        });
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to fetch bot list. Please login first.');
+                    }
+                }
+            populateBotTable();
     </script>
 </body>

@@ -22,17 +22,30 @@
                 <form id="addHandlerForm">
                     <input type="text" id="command" class="form-control mb-2" placeholder="Введите команду">
                     <input type="text" id="handlerText" class="form-control mb-2" placeholder="Текст обработчика">
+                    <input type="text" id="buttonList" class="form-control mb-2" placeholder="Кнопки через запятую">
+                    <select class="form-control" id="columnCount">
+                        <option value="1">1 колонка</option>
+                        <option value="2">2 колонки</option>
+                        <option value="3">3 колонки</option>
+                        <option value="4">4 колонки</option>
+                    </select>
                     <button class="btn btn-primary mb-3" onclick="addCommandHandler()">Добавить</button>
                 </form>
+                <h2>Добавить обработчик кнопки</h2>
+                <form id="addCallbackForm">
+                    <input type="text" id="callback" class="form-control mb-2" placeholder="Введите название кнопки для добавления">
+                    <input type="text" id="callbackText" class="form-control mb-2" placeholder="Текст при нажатии на кнопку">
+                    <button class="btn btn-primary mb-3" onclick="addCallbackHandler()">Добавить</button>
+                </form>
 
-                <h2>Удалить обработчик команды</h2>
+                <h2>Удалить элемент</h2>
                 <form id="deleteHandlerForm">
                     <input type="text" id="commandToDelete" class="form-control mb-2" placeholder="Введите команду для удаления">
-                    <button class="btn btn-primary mb-3" onclick="deleteCommandHandler()">Удалить</button>
+                    <button class="btn btn-primary mb-3" onclick="deleteHandler()">Удалить</button>
                 </form>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 scrollable-column">
                 <h2>Текущий актуальный код бота</h2>
                 <pre id="botCodeDisplay" class="bg-light p-3" style="white-space: pre-wrap;"></pre>
             </div>
@@ -66,8 +79,10 @@
             let botToken = getCurrentBotToken();
             let command = document.getElementById('command').value;
             let handlerText = document.getElementById('handlerText').value;
-            console.log(`/${botToken}/add_handler/${command}7&${handlerText}`)
-            fetch(`/${botToken}/add_handler/${command}7&${handlerText}`)
+            let buttonList = document.getElementById('buttonList').value;
+            let columnCount = document.getElementById('columnCount').value;
+            console.log(`/${botToken}/add_handler/${command}7&${handlerText}7&${buttonList}7&${columnCount}`)
+            fetch(`/${botToken}/add_handler/${command}7&${handlerText}7&${buttonList}7&${columnCount}`)
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('botCodeDisplay').innerText = data;
@@ -76,7 +91,21 @@
             return false;
         }
 
-        function deleteCommandHandler() {
+        function addCallbackHandler() {
+            let botToken = getCurrentBotToken();
+            let command = document.getElementById('callback').value;
+            let handlerText = document.getElementById('callbackText').value;
+            console.log(`/${botToken}/add_callback/${command}7&${handlerText}`)
+            fetch(`/${botToken}/add_callback/${command}7&${handlerText}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('botCodeDisplay').innerText = data;
+                })
+                .catch(error => console.error('Ошибка:', error));
+            return false;
+        }
+
+        function deleteHandler() {
             let botToken = getCurrentBotToken();
             let command = document.getElementById('commandToDelete').value;
             fetch(`/${botToken}/delete_handler/${command}`)
