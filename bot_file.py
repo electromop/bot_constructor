@@ -3,18 +3,22 @@ import os
 import re
 
 class BotFile:
-    def __init__(self, bot_token):
+    def __init__(self, bot_name, bot_token):
         self.token = bot_token
-        self.bot_path = f"bots/{bot_token}.py"    
+
+        self.bot_path = f"bots/{bot_name}/{bot_name}.py"    
         bot_file = True if not os.path.exists(self.bot_path) else False
         if bot_file:
+            os.makedirs(f"bots/{bot_name}", exist_ok=True)
             bot_file = open(self.bot_path, "w+")
             bot_file.write(f'''import telebot
 from telebot import types
 
 bot_token = "{bot_token}"
-bot = telebot.Bot(bot_token)
+bot = telebot.TeleBot(bot_token)
 #COMMANDS_LIST#COMMANDS_LIST_END
+
+bot.polling()
 ''')
             bot_file.close()
 
@@ -29,7 +33,7 @@ bot = telebot.Bot(bot_token)
             old_commands = filedata[filedata.find("#COMMANDS_LIST"):filedata.find("#COMMANDS_LIST_END")+18]
             new_commands = old_commands[:14] + old_commands[14:old_commands.find("#COMMANDS_LIST_END")] + f'{command},' + old_commands[old_commands.find("#COMMANDS_LIST_END"):]
             filedata = filedata.replace(old_commands, new_commands)
-
+            filedata = filedata.replace(old_commands, new_commands).replace("bot.polling()", "")
             with open(self.bot_path, 'w', encoding="utf-8") as file:
                 file.write(filedata)
                 file.write(f"{handler}")
@@ -46,7 +50,7 @@ bot = telebot.Bot(bot_token)
             handler = CallbackHandler(callback_data, text, buttons, buttons_list=buttons_list, ncol=ncol)
             old_commands = filedata[filedata.find("#COMMANDS_LIST"):filedata.find("#COMMANDS_LIST_END")+18]
             new_commands = old_commands[:14] + old_commands[14:old_commands.find("#COMMANDS_LIST_END")] + f'{callback_data},' + old_commands[old_commands.find("#COMMANDS_LIST_END"):]
-            filedata = filedata.replace(old_commands, new_commands)
+            filedata = filedata.replace(old_commands, new_commands).replace("bot.polling()", "")
 
             with open(self.bot_path, 'w', encoding="utf-8") as file:
                 file.write(filedata)
