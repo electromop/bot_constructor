@@ -1,4 +1,4 @@
-from chat_gpt_api import get_gpt_answer
+from neuro_apis.chat_gpt_api import get_gpt_answer
 from bot_file import BotFile
 
 question = "Хочу бота, который поможет моему инфобизнесу. Я специализурюсь на обучении людей по работе с телеграм каналами."
