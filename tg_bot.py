@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
-from bot_file import BotFile
-from user import User
+from src.bot_file import BotFile
+from src.user import User
 
 bot = telebot.TeleBot("6434108320:AAHcb8OpYIPpTKEpCFcpkD0zgl32HmLGMcM")
 

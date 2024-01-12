@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .chat-container {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .message {
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            opacity: 0; /* начальная прозрачность для анимации */
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .received {
+            background-color: #f0f0f0;
+            text-align: left;
+            animation: slideInLeft 0.5s ease-out forwards, fadeIn 0.5s ease-out forwards;
+        }
+
+        .sent {
+            background-color: #cce5ff;
+            text-align: right;
+            animation: slideInRight 0.5s ease-out forwards, fadeIn 0.5s ease-out forwards;
+        }
+
+        .btn-rounded {
+            border-radius: 20px;
+        }
+
+        .input-form {
+            margin-top: 15px;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+    <title>Чат в социальной сети</title>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mt-5">
+                <div class="card-body">
+                    <div class="chat-container">
+                        <!-- Пример сообщения от пользователя -->
+                        <div class="message received">
+                            <p>Выберите как вы хотите создать бота</p>
+                            <div class="btn-group mt-3" role="group">
+                                <button type="button" class="btn btn-primary mr-2 btn-rounded">Начать с чистого листа</button>
+                                <button type="button" class="btn btn-primary btn-rounded" id="generateBotBtn">Сгенерировать бота</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+    document.getElementById('generateBotBtn').addEventListener('click', function() {
+        var chatContainer = document.querySelector('.chat-container');
+
+        // Эмулируем отправку сообщения от пользователя
+        var userMessage = document.createElement('div');
+        userMessage.className = 'message sent';
+        userMessage.innerHTML = '<p>Сгенерировать бота</p>';
+        chatContainer.appendChild(userMessage);
+
+        setTimeout(function() {
+            // Эмулируем отправку сообщения от сайта
+            var siteMessage = document.createElement('div');
+            siteMessage.className = 'message received';
+            siteMessage.innerHTML = '<p>Опишите свой бизнес или бота, которого вы бы хотели.</p>';
+            chatContainer.appendChild(siteMessage);
+
+        }, 1000); // Задержка в 1 секунду (1000 миллисекунд)
+        setTimeout(function() {
+          // Добавляем форму для ввода описания бота
+          var inputForm = document.createElement('div');
+          inputForm.className = 'input-form';
+          inputForm.innerHTML = '<form><div class="form-group"><label for="botDescription">Описание бота:</label><textarea class="form-control" id="botDescription" rows="3"></textarea></div><button type="submit" class="btn btn-primary btn-rounded">Отправить</button></form>';
+          chatContainer.appendChild(inputForm);
+        }, 2000); // Задержка в 1 секунду (1000 миллисекунд)
+    });
+    
+    document.addEventListener('submit', function(event) {
+        // Предотвращаем отправку формы, чтобы страница не перезагружалась
+        event.preventDefault();
+		
+        var chatContainer = document.querySelector('.chat-container');
+        
+		// Удаляем форму для ввода описания бота
+        var inputForm = document.querySelector('.input-form');
+        userMessageText = document.getElementById('botDescription').value;
+        window.currentUser = {
+            message: userMessageText
+        };
+        if (inputForm) {
+            inputForm.remove();
+        }
+        
+        goToBot();
+        var userMessage = document.createElement('div');
+        userMessage.className = 'message sent';
+        userMessage.innerHTML = userMessageText;
+        chatContainer.appendChild(userMessage);
+        
+        setTimeout(function() {
+            // Эмулируем отправку сообщения от сайта
+            var siteMessage = document.createElement('div');
+            siteMessage.className = 'message received';
+            siteMessage.id = 'to_edit';
+            siteMessage.innerHTML = 'Обрабатываем ваш запрос...';
+            chatContainer.appendChild(siteMessage);
+        }, 1000); // Задержка в 1 секунду (1000 миллисекунд)
+
+        var messagesList = ['Гадаем на кофейной гуще...', 'Что же вы тут понаписали...', 'Еще немного...'];
+        var count = 0;
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        setTimeout(function() {
+            while (true) {
+                var siteMessage = document.getElementById('to_edit');
+                siteMessage.innerHTML = messagesList[count];
+                chatContainer.appendChild(siteMessage);
+                if (count == (messagesList.length - 1)) {
+                    break;
+                };
+                count++;
+                sleep(1000);
+            };
+        }, 2000); // Задержка в 1 секунду (1000 миллисекунд)
+        // Эмулируем ответ от бота после отправки формы
+        // setTimeout(function() {
+        //     var botMessage = document.getElementById('to_edit');
+        //     botMessage.className = 'message received';
+        //     botMessage.innerHTML = '<p>Готово! Теперь вы можете перейти к боту.</p><div class="btn-group mt-3" role="group"><button type="button" class="btn btn-primary mr-2 btn-rounded" onclick=goToBot()>Перейти к боту</button></div>';
+        //     chatContainer.appendChild(botMessage);
+        // }, 5000); // Задержка в 6 секунд (6000 миллисекунд) для анимации печатания
+    });
+
+    function getCurrentBotInfo() {
+            botToken = window.location.pathname.replace('/ai_chat', '');
+            botToken = botToken.replace('/', '')
+            console.log(botToken);
+            return botToken;
+        }
+
+    async function goToBot() {
+        var botPath = getCurrentBotInfo();
+        var request = encodeURI(currentUser.message);
+        console.log(`http://127.0.0.1:5000/${botPath}/ai/gen_bot/${request}`);
+        await window.location.replace(`http://127.0.0.1:5000/${botPath}/ai/gen_bot/${request}`);
+    };
+</script>
+
+</body>
+</html>
