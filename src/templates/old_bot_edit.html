@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Management</title>
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <style>
+        .left-panel {
+            padding-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-md-6 left-panel">
+                <h1>Управление ботом</h1>
+
+                <h2>Добавить обработчик команды</h2>
+                <form id="addHandlerForm">
+                    <input type="text" id="command" class="form-control mb-2" placeholder="Введите команду">
+                    <input type="text" id="handlerText" class="form-control mb-2" placeholder="Текст обработчика">
+                    <input type="text" id="buttonList" class="form-control mb-2" placeholder="Кнопки через запятую">
+                    <select class="form-control" id="columnCount">
+                        <option value="1">1 колонка</option>
+                        <option value="2">2 колонки</option>
+                        <option value="3">3 колонки</option>
+                        <option value="4">4 колонки</option>
+                    </select>
+                    <button class="btn btn-primary mb-3" onclick="addCommandHandler()">Добавить</button>
+                </form>
+                <h2>Добавить обработчик кнопки</h2>
+                <form id="addCallbackForm">
+                    <input type="text" id="callback" class="form-control mb-2" placeholder="Введите название кнопки для добавления">
+                    <input type="text" id="callbackText" class="form-control mb-2" placeholder="Текст при нажатии на кнопку">
+                    <button class="btn btn-primary mb-3" onclick="addCallbackHandler()">Добавить</button>
+                </form>
+
+                <h2>Удалить элемент</h2>
+                <form id="deleteHandlerForm">
+                    <input type="text" id="commandToDelete" class="form-control mb-2" placeholder="Введите команду для удаления">
+                    <button class="btn btn-primary mb-3" onclick="deleteHandler()">Удалить</button>
+                </form>
+            </div>
+
+            <div class="col-md-6 scrollable-column">
+                <h2>Текущий актуальный код бота</h2>
+                <pre id="botCodeDisplay" class="bg-light p-3" style="white-space: pre-wrap;"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+    <script>
+        function showBotCode(botToken) {
+            fetch("/" + botToken + "/show_code")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('botCodeDisplay').innerText = data;
+                })
+                .catch(error => console.error('Ошибка:', error));
+            return false;
+        }
+        
+        function getCurrentBotToken() {
+            botToken = window.location.pathname.replace('/', '');
+            return botToken;
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            botToken = getCurrentBotToken();
+            showBotCode(botToken);
+        });
+
+        function addCommandHandler() {
+            let botToken = getCurrentBotToken();
+            let command = document.getElementById('command').value;
+            let handlerText = document.getElementById('handlerText').value;
+            let buttonList = document.getElementById('buttonList').value;
+            let columnCount = document.getElementById('columnCount').value;
+            console.log(`/${botToken}/add_handler/${command}7&${handlerText}7&${buttonList}7&${columnCount}`)
+            fetch(`/${botToken}/add_handler/${command}7&${handlerText}7&${buttonList}7&${columnCount}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('botCodeDisplay').innerText = data;
+                })
+                .catch(error => console.error('Ошибка:', error));
+            return false;
+        }
+
+        function addCallbackHandler() {
+            let botToken = getCurrentBotToken();
+            let command = document.getElementById('callback').value;
+            let handlerText = document.getElementById('callbackText').value;
+            console.log(`/${botToken}/add_callback/${command}7&${handlerText}`)
+            fetch(`/${botToken}/add_callback/${command}7&${handlerText}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('botCodeDisplay').innerText = data;
+                })
+                .catch(error => console.error('Ошибка:', error));
+            return false;
+        }
+
+        function deleteHandler() {
+            let botToken = getCurrentBotToken();
+            let command = document.getElementById('commandToDelete').value;
+            fetch(`/${botToken}/delete_handler/${command}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('botCodeDisplay').innerText = data;
+                })
+                .catch(error => console.error('Ошибка:', error));
+                console.log(data)
+            return false;
+        }
+    </script>
+</body>
+</html>

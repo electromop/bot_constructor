@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+  <title>Your Sidebar Page</title>
+  <style>
+    body {
+      padding-top: 0; /* Remove padding for fixed navbar */
+      margin: 0; /* Remove default margin to fill the entire height */
+      background-color: rgb(32, 32, 39);
+      text-color: white;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 200px;
+      background-color: rgb(29, 29, 32); /* Set black color for the sidebar */
+      padding-top: 56px;
+      overflow-x: hidden;
+      transition: 0.5s;
+      z-index: 1;
+    }
+
+    .sidebar a {
+      padding: 10px 15px;
+      text-decoration: none;
+      font-size: 18px;
+      color: #fff; /* Set white color for the links */
+      display: block;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #f1f1f1;
+      color: #000; /* Set black color on hover for better visibility */
+    }
+
+    .main-content {
+      transition: margin-left 0.5s;
+      margin-left: 200px; /* Set initial margin for main content */
+      padding: 16px;
+      color:white;
+    }
+
+    .toggle-button {
+      position: fixed;
+      top: 50%;
+      left: 200px;
+      transform: translateY(-50%);
+      padding: 10px;
+      cursor: pointer;
+      background-color: rgb(32, 32, 39);
+      border: none;
+      outline: none;
+      z-index: 2; /* Ensure the button is above the sidebar */
+      transition:all 0.5s;
+    }
+    .profile {
+      position: fixed;
+      bottom: 2%;
+      transition:all 0.5s;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div>
+    <div class="sidebar">
+      <!-- Add your sidebar content here -->
+        <a href="#">Бот 1</a>
+        <a href="#">Бот 2</a>
+      <a class="profile" href="#">Профиль</a>
+      <!-- Add more sidebar items as needed -->
+    </div>
+      <!-- Toggle Button -->
+  <button class="toggle-button" onclick="setSidebarWidth()">
+    <span class="toggle-button-icon">&#9654</span>
+  </button>
+   </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Your page content goes here -->
+    <h1 class="mt-4">Your Content</h1>
+    <p>...</p>
+  </div>
+
+  <!-- Bootstrap JavaScript and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"></script>
+  <script>
+  	var sidebarstate = true;
+    
+    function setSidebarWidth() {
+      if (sidebarstate == true) {
+    	var width = 0;
+        sidebarstate = false;
+      } else {
+      	var width = 200;
+        sidebarstate = true;
+      }
+      $(".sidebar").css("width", width + "px");
+      $(".main-content").css("margin-left", width + "px");
+      $(".toggle-button").css("left", width + "px");
+      $(".profile").css("position", '');
+    }
+   setSideBarWidth();
+  </script>
+
+</body>
+</html>

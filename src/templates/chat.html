@@ -5,14 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
+        .body-grey {
+            background-color: #f0f0f0;
+        }
+
+        .input-form {
+            margin-bottom: auto;
+        }
+
+        .card {
+            background-color: #f0f0f0;
+            border: 0;
+            height: 100vh;
+        }
         .chat-container {
+            background-color: #f0f0f0;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
         }
 
         .message {
-            border-radius: 15px;
+            border-radius: 25px;
             padding: 15px;
             margin-bottom: 15px;
             opacity: 0; /* начальная прозрачность для анимации */
@@ -20,13 +34,14 @@
         }
 
         .received {
-            background-color: #f0f0f0;
+            background-color: white;
             text-align: left;
             animation: slideInLeft 0.5s ease-out forwards, fadeIn 0.5s ease-out forwards;
         }
 
         .sent {
-            background-color: #cce5ff;
+            background-color: #5ca6fa;
+            color: white;
             text-align: right;
             animation: slideInRight 0.5s ease-out forwards, fadeIn 0.5s ease-out forwards;
         }
@@ -68,7 +83,7 @@
     </style>
     <title>Чат в социальной сети</title>
 </head>
-<body>
+<body class="body-grey">
 
 <div class="container-fluid">
     <div class="row">
@@ -79,7 +94,7 @@
                         <!-- Пример сообщения от пользователя -->
                         <div class="message received">
                             <p>Выберите как вы хотите создать бота</p>
-                            <div class="btn-group mt-3" role="group">
+                            <div class="mt-3">
                                 <button type="button" class="btn btn-primary mr-2 btn-rounded">Начать с чистого листа</button>
                                 <button type="button" class="btn btn-primary btn-rounded" id="generateBotBtn">Сгенерировать бота</button>
                             </div>
@@ -116,7 +131,7 @@
           // Добавляем форму для ввода описания бота
           var inputForm = document.createElement('div');
           inputForm.className = 'input-form';
-          inputForm.innerHTML = '<form><div class="form-group"><label for="botDescription">Описание бота:</label><textarea class="form-control" id="botDescription" rows="3"></textarea></div><button type="submit" class="btn btn-primary btn-rounded">Отправить</button></form>';
+          inputForm.innerHTML = '<form><div class="form-group"><label for="botDescription"></label><textarea class="form-control" id="botDescription" rows="3" placeholder="Введите описание бота"></textarea></div><button type="submit" class="btn btn-primary btn-rounded">Отправить</button></form>';
           chatContainer.appendChild(inputForm);
         }, 2000); // Задержка в 1 секунду (1000 миллисекунд)
     });
@@ -138,6 +153,7 @@
         }
         
         goToBot();
+        
         var userMessage = document.createElement('div');
         userMessage.className = 'message sent';
         userMessage.innerHTML = userMessageText;
@@ -148,36 +164,36 @@
             var siteMessage = document.createElement('div');
             siteMessage.className = 'message received';
             siteMessage.id = 'to_edit';
-            siteMessage.innerHTML = 'Обрабатываем ваш запрос...';
+            siteMessage.innerHTML = '✅Обрабатываем ваш запрос...';
             chatContainer.appendChild(siteMessage);
         }, 1000); // Задержка в 1 секунду (1000 миллисекунд)
 
-        var messagesList = ['Гадаем на кофейной гуще...', 'Что же вы тут понаписали...', 'Еще немного...'];
-        var count = 0;
+        var messagesList = [
+            '<p class="line-1 anim-typewriter">🔮 Гадаем на кофейной гуще...</p>',
+            '<p class="line-1 anim-typewriter">📝 Что же Вы тут понаписали...</p>',
+            '<p class="line-1 anim-typewriter">⏳ Еще немного...</p>',
+            '<p class="line-1 anim-typewriter">🐱 Ожидаем вдохновения от котика...</p>',
+            '<p class="line-1 anim-typewriter">🚀 Загружаем космический чай...</p>',
+            '<p class="line-1 anim-typewriter">🤔 Ждем, когда ваши мысли переберутся в код...</p>',
+            '<p class="line-1 anim-typewriter">👋 Как ваши дела? Пока ответите, мы загрузимся...</p>',
+            '<p class="line-1 anim-typewriter">🕵️‍♀️ Ищем потерянные биты и байты...</p>',
+            '<p class="line-1 anim-typewriter">😺 Котики готовы к загрузке веселья...</p>',
+            '<p class="line-1 anim-typewriter">😂 Загружаем смехопанораму... Веселье начнется через мгновение!</p>',
+            '<p class="line-1 anim-typewriter">💡 Ждем ваших мыслей, чтобы превратить их в цифры...</p>',
+            '<p class="line-1 anim-typewriter">☁️ Пока ковыряем пальцем в облаках, загружаем контент...</p>',
+            '<p class="line-1 anim-typewriter">❓ Что будет, если кликнуть мышью 1000 раз? Давайте узнаем!</p>'
+        ];
 
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-        
-        setTimeout(function() {
-            while (true) {
-                var siteMessage = document.getElementById('to_edit');
-                siteMessage.innerHTML = messagesList[count];
+        setTimeout(() => {
+            var siteMessage = document.getElementById('to_edit');
+            // siteMessage.classList.add('line-1 anim-typewriter');
+            for (let i = 0; i <= messagesList.length - 1; i++) {
+            setTimeout(() => {
+                siteMessage.innerHTML = messagesList[Math.floor(Math.random() * messagesList.length)];
                 chatContainer.appendChild(siteMessage);
-                if (count == (messagesList.length - 1)) {
-                    break;
-                };
-                count++;
-                sleep(1000);
-            };
-        }, 2000); // Задержка в 1 секунду (1000 миллисекунд)
-        // Эмулируем ответ от бота после отправки формы
-        // setTimeout(function() {
-        //     var botMessage = document.getElementById('to_edit');
-        //     botMessage.className = 'message received';
-        //     botMessage.innerHTML = '<p>Готово! Теперь вы можете перейти к боту.</p><div class="btn-group mt-3" role="group"><button type="button" class="btn btn-primary mr-2 btn-rounded" onclick=goToBot()>Перейти к боту</button></div>';
-        //     chatContainer.appendChild(botMessage);
-        // }, 5000); // Задержка в 6 секунд (6000 миллисекунд) для анимации печатания
+            }, i * 3500)
+        }
+        }, 4500)
     });
 
     function getCurrentBotInfo() {

@@ -1,10 +1,10 @@
 import json
 from openai import OpenAI
 
-def get_gpt_answer(gpt_request, version="gpt-3.5-turbo"):
+def get_gpt_answer(gpt_request, version="gpt-4"):
     client = OpenAI(
     organization='org-VrtKVSdMrmVo9JJin87Y7Dzi',
-    api_key="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"
+    api_key="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"
     )
 
     completion = client.chat.completions.create(
@@ -16,14 +16,17 @@ def get_gpt_answer(gpt_request, version="gpt-3.5-turbo"):
     )
     try:
         answer_message = completion.choices[0].message.content
-        # print(answer_message)
-        json_structure = json.loads(completion.choices[0].message.content)
+        answer_message = answer_message[answer_message.find("```json") + 7: answer_message.find("]\n```") + 1]
+        print(answer_message)
+        json_structure = json.loads(answer_message)
         if json_structure == None:
             get_gpt_answer(gpt_request)
+            print("Ушел в None")
         else:
             return json_structure
     
     except json.decoder.JSONDecodeError:
+        print("Словил ошибку")
         get_gpt_answer(gpt_request)
 
 # print(get_gpt_answer("Хочу бота для инфобизнеса"))

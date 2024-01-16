@@ -3,120 +3,678 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bot Management</title>
-    <!-- CSS only -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@taye/interactjs@1.10.11/dist/interact.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.0.2/interact.min.js" integrity="sha512-Ipef/NhGC7SlCer4041clfWKsriVhnGMcS15cVrl9j/NFtNmqeK28tbfOFwASlSfy4j8XjcpVw4HXvTvzgA8rA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
-        .left-panel {
-            padding-right: 20px;
+        body {
+            /* background-color: #333; */
+            color: #fff;
+            overflow: hidden;
+            /* background-image: url(https://media.istockphoto.com/id/1427921411/vector/grid.jpg?s=612x612&w=0&k=20&c=OxsskOAaZj5uGyjDRKwS-awK-mQRHpeN5meg8ZgkfF8=);
+            background-attachment: fixed; Фиксируем фон веб-страницы */
+            /* background-repeat: repeat-y; */
+        }
+
+        .liner_draggable {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: #ccc;
+            cursor: move;
+        }
+
+        .line {
+            position: absolute;
+            border: 1px solid #000;
+        }
+
+        .scroll-container {
+            overflow: scroll;
+            display: flex;
+            /* display: grid; */
+            min-width: 100vw;
+            min-height: 100vh;
+        }
+        
+        .rounded-square {
+            background-color: #444;
+            border-radius: 25px;
+            border-color:aliceblue;
+            width: 20vw; /* Уменьшил ширину блока */
+            /* min-height: 30vh; Увеличил высоту блока */
+            position: relative;
+            height: fit-content;
+        }
+
+        .border {
+            border: 2px solid #555;
+            border-radius: 8px;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            color: #fff;
+        }
+
+        .btn-save {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .btn-save:hover {
+            background-color: #218838;
+            color: #fff;
+        }
+
+        .btn-delete {
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 1.2em;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+
+        .btn-delete:hover {
+            color: #bd2130;
+        }
+
+        .editable {
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        .btn-dynamic {
+            background-color: #ffc107; /* Желтый цвет для динамических кнопок */
+            color: #000;
+        }
+        .btn-dynamic {
+            max-width: 100px;
+        }
+
+        #addButton {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        #addButton:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        #addBlockButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #17a2b8;
+            color: #fff;
+            z-index: 1000;
+        }
+
+        #addBlockButton:hover {
+            background-color: #138496;
+            color: #fff;
+        }
+        #saveAllButton {
+            position: absolute;
+            top: 10px;
+            right: 150px;
+            background-color: #28a745;
+            color: #fff;
+            z-index: 1000;
+        }
+
+        #publishButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #007bff;
+            color: #fff;
+            z-index: 1000;
+        }
+
+        #saveAllButton:hover, #publishButton:hover {
+            background-color: #218838;
+            color: #fff;
+        }
+        #zoomSlider {
+            position: fixed;
+            bottom: 20px;
+            right: 10px;
+            width: 150px;
+        }
+        .no-zoom {
+           zoom: 1 !important;
+        }
+
+        #trash_button {
+            position: relative;
+            margin-left: 240px;
         }
     </style>
+    <title>Ваша страница</title>
 </head>
 <body>
-    <div class="container mt-3">
-        <div class="row">
-            <div class="col-md-6 left-panel">
-                <h1>Управление ботом</h1>
 
-                <h2>Добавить обработчик команды</h2>
-                <form id="addHandlerForm">
-                    <input type="text" id="command" class="form-control mb-2" placeholder="Введите команду">
-                    <input type="text" id="handlerText" class="form-control mb-2" placeholder="Текст обработчика">
-                    <input type="text" id="buttonList" class="form-control mb-2" placeholder="Кнопки через запятую">
-                    <select class="form-control" id="columnCount">
-                        <option value="1">1 колонка</option>
-                        <option value="2">2 колонки</option>
-                        <option value="3">3 колонки</option>
-                        <option value="4">4 колонки</option>
-                    </select>
-                    <button class="btn btn-primary mb-3" onclick="addCommandHandler()">Добавить</button>
-                </form>
-                <h2>Добавить обработчик кнопки</h2>
-                <form id="addCallbackForm">
-                    <input type="text" id="callback" class="form-control mb-2" placeholder="Введите название кнопки для добавления">
-                    <input type="text" id="callbackText" class="form-control mb-2" placeholder="Текст при нажатии на кнопку">
-                    <button class="btn btn-primary mb-3" onclick="addCallbackHandler()">Добавить</button>
-                </form>
+<!-- Кнопка "Добавить новый блок" -->
+<button class="btn btn-success no-zoom" data-toggle="modal" data-target="#addNewBlockModal" id="addBlockButton">
+    <i class="fas fa-plus"></i> Добавить новый блок
+</button>
 
-                <h2>Удалить элемент</h2>
-                <form id="deleteHandlerForm">
-                    <input type="text" id="commandToDelete" class="form-control mb-2" placeholder="Введите команду для удаления">
-                    <button class="btn btn-primary mb-3" onclick="deleteHandler()">Удалить</button>
-                </form>
+<div class="scroll-container" id="blocksContainer">
+    <!-- Блоки будут добавляться сюда -->
+</div>
+
+ <!--Модальное окно для добавления нового блока -->
+<div class="modal fade no-zoom" id="addNewBlockModal" tabindex="-1" role="dialog" aria-labelledby="addNewBlockModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+                <h5 class="modal-title text-light" id="addNewBlockModalLabel">Добавить новый блок</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-
-            <div class="col-md-6 scrollable-column">
-                <h2>Текущий актуальный код бота</h2>
-                <pre id="botCodeDisplay" class="bg-light p-3" style="white-space: pre-wrap;"></pre>
+            <div class="modal-body">
+                <button class="btn btn-success" onclick="addNewBlock()">Добавить команду</button>
+                <button class="btn btn-success" onclick="addNewBlockButton()">Добавить обработчик кнопки</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- JavaScript and dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
-    <script>
-        function showBotCode(botToken) {
-            fetch("/" + botToken + "/show_code")
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('botCodeDisplay').innerText = data;
-                })
-                .catch(error => console.error('Ошибка:', error));
-            return false;
+<!-- Модальное окно для добавления кнопки -->
+<div class="modal fade no-zoom" id="addButtonModal" tabindex="-1" role="dialog" aria-labelledby="addButtonModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+                <h5 class="modal-title text-light" id="addButtonModalLabel">Добавить кнопку</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="newButtonText">Текст кнопки (макс. 30 символов):</label>
+                <input type="text" class="form-control" id="newButtonText" maxlength="30" placeholder="Введите текст кнопки">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-success" onclick="addButtonToCurrentBlock()">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input id="zoomSlider" class="no-zoom" type="range" min="0.1" max="2" step="0.1" value="1" onchange="updateZoom()">
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    var blockCount = 0; // Счетчик блоков
+    drawFromStructure(getCurrentBotPath())
+        .then(data => {
+            const json = data;
+            const obj = JSON.parse(json);
+            obj.success.forEach(function(action) {
+                if (action.command_action != undefined) {
+                    blockId = addNewMessageBlockFromJSON(action);
+                } else {
+                    blockId = addNewButtonBlockFromJSON(action);
+                }
+                for (button in action.buttons) {
+                        console.log(action.buttons[button]);
+                        genButtonToCurrentBlock(blockId, action.buttons[button]);
+                }
+            });
+        })
+        .catch(error => {
+            // Обработка ошибок здесь
+            console.error('Ошибка после запроса:', error);
+        });
+    // Функция добавления нового блока
+    function addNewBlock() {
+        var blocksContainer = document.getElementById('blocksContainer');
+        var newBlock = document.createElement('div');
+        newBlock.classList.add('rounded-square', 'text-center', 'mb-4', 'p-3', 'liner_draggable');
+        newBlock.id = 'block' + blockCount; // Уникальный идентификатор блока
+        newBlock.innerHTML = `
+            <div class="">
+                <div class="row">
+                    <button class="btn" id="trash_button" onclick="deleteTeamBlock(${blockCount})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-x-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+</svg>
+                    </button>
+                </div>
+            </div>
+            <div class="mt-3">
+                <div class="border p-2">
+                    <label for="teamName${blockCount}"><strong>Название команды</strong></label>
+                    <input type="text" class="form-control" id="teamName${blockCount}" placeholder="Введите название команды">
+                </div>
+            </div>
+            <div class="mb-3 content-place">
+                <div class="border p-2">
+                    <label for="messageText${blockCount}"><strong>Текст сообщения</strong></label>
+                    <textarea class="form-control" id="messageText${blockCount}" rows="4" placeholder="Введите текст сообщения"></textarea>
+                </div>
+            </div>
+            <div class="row" id="buttonRow${blockCount}"></div>
+            <div class="row mt-3">
+                <div class="col">
+                    <button class="btn btn-save" onclick="saveOrEdit(${blockCount})">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-success" data-toggle="modal" data-target="#addButtonModal" onclick="setCurrentBlockId(${blockCount})">
+                        <i class="fas fa-plus"></i> Добавить кнопку
+                    </button>
+                </div>
+            </div>
+        `;
+        blocksContainer.appendChild(newBlock);
+        $('#addNewBlockModal').modal('hide'); // Закрываем модальное окно после добавления блока
+        blockCount++;
+    }
+    function addNewBlockButton() {
+        var blocksContainer = document.getElementById('blocksContainer');
+        var newBlock = document.createElement('div');
+        newBlock.classList.add('rounded-square', 'text-center', 'mb-4', 'p-3', 'liner_draggable');
+        newBlock.id = 'block' + blockCount; // Уникальный идентификатор блока
+        newBlock.innerHTML = `
+            <div class="l">
+                <div class="row">
+                    <button class="btn" id="trash_button" onclick="deleteTeamBlock(${blockCount})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-x-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+</svg>
+                    </button>
+                </div>
+            </div>
+            <div class="mt-3">
+                <div class="border p-2">
+                    <label for="teamName${blockCount}"><strong>Название кнопки</strong></label>
+                    <input type="text" class="form-control" id="teamName${blockCount}" placeholder="Введите название кнопки">
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="border p-2">
+                    <label for="messageText${blockCount}"><strong>Текст сообщения</strong></label>
+                    <textarea class="form-control" id="messageText${blockCount}" rows="4" placeholder="Введите текст сообщения"></textarea>
+                </div>
+            </div>
+            <div class="row" id="buttonRow${blockCount}"></div>
+            <div class="row mt-3">
+                <div class="col">
+                    <button class="btn btn-save" onclick="saveOrEdit(${blockCount})">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-success" data-toggle="modal" data-target="#addButtonModal" onclick="setCurrentBlockId(${blockCount})">
+                        <i class="fas fa-plus"></i> Добавить кнопку
+                    </button>
+                </div>
+            </div>
+        `;
+        blocksContainer.appendChild(newBlock);
+        $('#addNewBlockModal').modal('hide'); // Закрываем модальное окно после добавления блока
+        blockCount++;
+    }
+    // Функция для сохранения или редактирования блока
+    function saveOrEdit(blockId) {
+        var messageText = document.getElementById('messageText' + blockId);
+        var teamName = document.getElementById('teamName' + blockId);
+        var buttons = document.querySelectorAll('#buttonRow' + blockId + ' .editable');
+
+        // Сохраняем изменения
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].setAttribute('contenteditable', 'true');
         }
-        
-        function getCurrentBotToken() {
-            botToken = window.location.pathname.replace('/', '');
-            return botToken;
-        }
-        document.addEventListener('DOMContentLoaded', function () {
-            botToken = getCurrentBotToken();
-            showBotCode(botToken);
+    }
+
+    // Функция для установки текущего блока при добавлении кнопки
+    var currentBlockId;
+
+    function setCurrentBlockId(blockId) {
+        currentBlockId = blockId;
+    }
+
+    // Функция добавления новой кнопки к текущему блоку
+    function addButtonToCurrentBlock() {
+        var buttonRow = document.getElementById('buttonRow' + currentBlockId);
+        var newButtonText = (document.getElementById('newButtonText').value || 'Новая кнопка').substring(0, 30);
+
+        var newButton = document.createElement('div');
+        newButton.classList.add('col', 'mb-2');
+        newButton.innerHTML = '<button class="btn btn-dynamic btn-block editable" contenteditable="true">' + newButtonText + '</button>';
+        buttonRow.appendChild(newButton);
+
+        var deleteIcon = document.createElement('i');
+        deleteIcon.classList.add('fas', 'fa-trash', 'btn-delete', 'mr-0');
+        deleteIcon.setAttribute('onclick', 'removeButton(this)');
+        newButton.appendChild(deleteIcon);
+
+        $('#addButtonModal').modal('hide'); // Закрываем модальное окно после добавления кнопки
+    }
+
+    // Функция для удаления кнопки
+    function removeButton(icon) {
+        var buttonRow = icon.parentNode.parentNode;
+
+        var button = icon.parentNode;
+        buttonRow.removeChild(button);
+    }
+    
+    // drag and drop
+    interact('.rounded-square')
+        .draggable({
+            onmove: dragMoveListener,
         });
 
-        function addCommandHandler() {
-            let botToken = getCurrentBotToken();
-            let command = document.getElementById('command').value;
-            let handlerText = document.getElementById('handlerText').value;
-            let buttonList = document.getElementById('buttonList').value;
-            let columnCount = document.getElementById('columnCount').value;
-            console.log(`/${botToken}/add_handler/${command}7&${handlerText}7&${buttonList}7&${columnCount}`)
-            fetch(`/${botToken}/add_handler/${command}7&${handlerText}7&${buttonList}7&${columnCount}`)
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('botCodeDisplay').innerText = data;
-                })
-                .catch(error => console.error('Ошибка:', error));
-            return false;
+    function dragMoveListener(event) {
+        var target = event.target;
+        var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+        var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+        target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+        target.setAttribute('data-x', x);
+        target.setAttribute('data-y', y);
+
+        // Отключаем перемещение блока при редактировании текста в поле ввода
+        var inputElements = target.querySelectorAll('input, textarea');
+        for (var i = 0; i < inputElements.length; i++) {
+            inputElements[i].addEventListener('mousedown', function (e) {
+                e.stopPropagation();
+            });
+        }
+    }
+
+    interact('.rounded-square').dropzone({
+        accept: '.rounded-square',
+        overlap: 0.50,
+        ondropactivate: function (event) {
+            event.target.classList.add('drop-active');
+        },
+        ondragenter: function (event) {
+            var draggableElement = event.relatedTarget;
+            var dropzoneElement = event.target;
+
+            dropzoneElement.classList.add('drop-target');
+            draggableElement.classList.add('can-drop');
+        },
+        ondragleave: function (event) {
+            event.target.classList.remove('drop-target');
+            event.relatedTarget.classList.remove('can-drop');
+        },
+        ondrop: function (event) {
+            var draggedElement = event.relatedTarget;
+            var dropzoneElement = event.target;
+
+            dropzoneElement.classList.remove('drop-target');
+            draggedElement.classList.remove('can-drop');
+        },
+        ondropdeactivate: function (event) {
+            event.target.classList.remove('drop-active');
+            event.target.classList.remove('drop-target');
+        }
+    });
+
+    // Новые функции для сохранения всех и публикации
+    function saveAll() {
+        var saveButtons = document.querySelectorAll('.btn-save');
+        saveButtons.forEach(function (button) {
+            saveOrEdit(button.getAttribute('data-block-id'));
+        });
+    }
+
+    function publish() {
+        // Логика для публикации
+        console.log('Опубликовано!');
+    }
+    
+    function addCommand() {
+        var commandInput = document.createElement('input');
+        commandInput.type = 'text';
+        commandInput.className = 'form-control';
+        commandInput.placeholder = 'Введите команду';
+        document.querySelector('.modal-body').appendChild(commandInput);
+    }
+
+    function addHandler() {
+        var handlerInput = document.createElement('input');
+        handlerInput.type = 'text';
+        handlerInput.className = 'form-control';
+        handlerInput.placeholder = 'Введите обработчик кнопки';
+        document.querySelector('.modal-body').appendChild(handlerInput);
+    }
+
+    function updateZoom() {
+        var zoomValue = document.getElementById('zoomSlider').value;
+        document.body.style.zoom = zoomValue;
+
+        // Устанавливаем стиль для элементов, которые нужно исключить от масштабирования
+        var noZoomElements = document.querySelectorAll('.no-zoom');
+        for (var i = 0; i < noZoomElements.length; i++) {
+            noZoomElements[i].style.zoom = 1 / zoomValue;
+        }
+    }
+    // document.addEventListener('wheel', function (event) {
+    //     var zoomSlider = document.getElementById('zoomSlider');
+    //     // Увеличиваем или уменьшаем значение слайдера в зависимости от направления колесика
+    //     zoomSlider.value = parseFloat(zoomSlider.value) + (event.deltaY > 0 ? -0.1 : 0.1);
+    //     // Убеждаемся, что значение слайдера находится в пределах от минимального до максимального
+    //     zoomSlider.value = Math.min(2, Math.max(0.1, zoomSlider.value));
+    //     // Обновляем масштаб
+    //     updateZoom();
+    //     // Отменяем стандартное поведение колесика мыши
+    //     event.preventDefault();
+    // });
+    
+    function deleteTeamBlock(blockCount) {
+        var teamBlock = document.getElementById("block" + blockCount);
+        if (teamBlock) {
+            teamBlock.remove();
+    }
+    }
+    function addNewMessageBlockFromJSON(action) {
+        var blocksContainer = document.getElementById('blocksContainer');
+        var newBlock = document.createElement('div');
+        let command = action["command_action"];
+        let text = action["message_text"];
+        newBlock.classList.add('rounded-square', 'text-center', 'mb-4', 'p-3', 'liner_draggable');
+        newBlock.id = 'block' + blockCount; // Уникальный идентификатор блока
+        newBlock.innerHTML = `
+            <div class="">
+                <div class="row">
+                    <button class="btn" id="trash_button" onclick="deleteTeamBlock(${blockCount})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-x-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+</svg>
+                    </button>
+                </div>
+            </div>
+            <div class="mt-3">
+                <div class="border p-2">
+                    <label for="teamName${blockCount}"><strong>Название команды</strong></label>
+                    <input type="text" class="form-control" id="teamName${blockCount}" placeholder="Введите название команды" value="${command}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="border p-2">
+                    <label for="messageText${blockCount}"><strong>Текст сообщения</strong></label>
+                    <textarea class="form-control" id="messageText${blockCount}" rows="4" placeholder="Введите текст сообщения">${text}</textarea>
+                </div>
+            </div>
+            <div class="row" id="buttonRow${blockCount}"></div>
+            <div class="row mt-3">
+                <div class="col">
+                    <button class="btn btn-save" onclick="saveOrEdit(${blockCount})">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-success" data-toggle="modal" data-target="#addButtonModal" onclick="setCurrentBlockId(${blockCount})">
+                        <i class="fas fa-plus"></i> Добавить кнопку
+                    </button>
+                </div>
+            </div>
+        `;
+        blocksContainer.appendChild(newBlock);
+        $('#addNewBlockModal').modal('hide'); // Закрываем модальное окно после добавления блока
+        blockCount++;
+        return blockCount - 1;
+    }
+
+    function addNewButtonBlockFromJSON(action) {
+        var blocksContainer = document.getElementById('blocksContainer');
+        var newBlock = document.createElement('div');
+        let command = action["button_action"];
+        let text = action["message_text"];
+        newBlock.classList.add('rounded-square', 'text-center', 'mb-4', 'p-3', 'liner_draggable');
+        newBlock.id = 'block' + blockCount; // Уникальный идентификатор блока
+        newBlock.innerHTML = `
+            <div class="">
+                <div class="row">
+                    <button class="btn" id="trash_button" onclick="deleteTeamBlock(${blockCount})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-x-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+</svg>
+                    </button>
+                </div>
+            </div>
+            <div class="mt-3">
+                <div class="border p-2">
+                    <label for="teamName${blockCount}"><strong>Название кнопки</strong></label>
+                    <input type="text" class="form-control" id="teamName${blockCount}" placeholder="Введите название кнопки" value="${command}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="border p-2">
+                    <label for="messageText${blockCount}"><strong>Текст сообщения</strong></label>
+                    <textarea class="form-control" id="messageText${blockCount}" rows="4" placeholder="Введите текст сообщения">${text}</textarea>
+                </div>
+            </div>
+            <div class="row" id="buttonRow${blockCount}"></div>
+            <div class="row mt-3">
+                <div class="col">
+                    <button class="btn btn-save" onclick="saveOrEdit(${blockCount})">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-success" data-toggle="modal" data-target="#addButtonModal" onclick="setCurrentBlockId(${blockCount})">
+                        <i class="fas fa-plus"></i> Добавить кнопку
+                    </button>
+                </div>
+            </div>
+        `;
+        blocksContainer.appendChild(newBlock);
+        blockCount++;
+        return blockCount - 1;
+    }
+
+    function genButtonToCurrentBlock(currentBlockId, text) {
+        var buttonRow = document.getElementById('buttonRow' + currentBlockId);
+        var newButtonText = (document.getElementById('newButtonText').value || text).substring(0, 30);
+
+        var newButton = document.createElement('div');
+        newButton.classList.add('col', 'mb-2');
+        newButton.innerHTML = '<button class="btn btn-dynamic btn-block editable" contenteditable="true">' + newButtonText + '</button>';
+        buttonRow.appendChild(newButton);
+
+        var deleteIcon = document.createElement('i');
+        deleteIcon.classList.add('fas', 'fa-trash', 'btn-delete', 'mr-0');
+        deleteIcon.setAttribute('onclick', 'removeButton(this)');
+        newButton.appendChild(deleteIcon);
+
+        $('#addButtonModal').modal('hide'); // Закрываем модальное окно после добавления кнопки
+    }
+
+    function getCurrentBotPath() {
+            botPath = window.location.pathname.replace('/', '');
+            return botPath;
         }
 
-        function addCallbackHandler() {
-            let botToken = getCurrentBotToken();
-            let command = document.getElementById('callback').value;
-            let handlerText = document.getElementById('callbackText').value;
-            console.log(`/${botToken}/add_callback/${command}7&${handlerText}`)
-            fetch(`/${botToken}/add_callback/${command}7&${handlerText}`)
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('botCodeDisplay').innerText = data;
-                })
-                .catch(error => console.error('Ошибка:', error));
-            return false;
+    function drawFromStructure(botToken) {
+    var data;
+        return fetch("/" + botToken + "/get_structure")
+            .then(response => response.json())
+            .then(data => {
+                // Вернуть данные для использования в следующем блоке .then()
+                return data;
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                // Пробросить ошибку для обработки в следующем блоке .catch()
+                throw error;
+            });
         }
+    //dfghjdfgj
+        $(document).ready(function() {
+    $(".liner_draggable").draggable({
+      containment: "parent"
+    });
 
-        function deleteHandler() {
-            let botToken = getCurrentBotToken();
-            let command = document.getElementById('commandToDelete').value;
-            fetch(`/${botToken}/delete_handler/${command}`)
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('botCodeDisplay').innerText = data;
-                })
-                .catch(error => console.error('Ошибка:', error));
-                console.log(data)
-            return false;
-        }
-    </script>
+    $(".liner_draggable").on("drag", function() {
+      updateLines();
+    });
+  });
+
+  function updateLines() {
+    $(".line").remove();
+
+    $(".liner_draggable").each(function(index, element) {
+      var startX = $(this).position().left + $(this).width() / 2;
+      var startY = $(this).position().top + $(this).height() / 2;
+
+      $(".liner_draggable").not(this).each(function() {
+        var endX = $(this).position().left + $(this).width() / 2;
+        var endY = $(this).position().top + $(this).height() / 2;
+
+        drawLine(startX, startY, endX, endY);
+      });
+    });
+  }
+
+  function drawLine(x1, y1, x2, y2) {
+    var length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    var angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+    var transform = "rotate(" + angle + "deg)";
+
+    var line = $("<div>")
+      .appendTo("#blocksContainer")
+      .addClass("line")
+      .css({
+        position: "absolute",
+        left: x1,
+        top: y1,
+        width: length,
+        transform: transform
+      });
+  }
+</script>
+<button id="saveAllButton" class="btn btn-save no-zoom" onclick="saveAll()">Сохранить все</button>
+<button id="publishButton" class="btn btn-success no-zoom" onclick="publish()">Опубликовать</button>
 </body>
 </html>

@@ -45,3 +45,61 @@ def {func_name}_callback(call):
 #{self.callback_data}_end
 bot.polling()'''
 #КОСТЫЛЬ!!!!
+    
+class CatalogHandler:
+    def __init__(self, command, handler_type="simple"):
+        self.command = command
+        self.handler_type = handler_type
+
+    def __str__(self):
+        route = f'@bot.callback_query_handler(func= lambda call: call.data == "{self.command}")\n' if self.handler_type != 'simple' else f"@bot.message_handler(commands=['{self.command}'])\n"
+        return route + '''
+def browse_cat(call):
+    bot.answer_callback_query(call.id, "")
+    catalog = Catalog()
+    button_dict = {'Вперед': {'text': 'Вперед', 'callback': 'Вперед1'}}
+    buttons = [
+    types.InlineKeyboardButton(button_dict[button]['text'], callback_data=button_dict[button]['callback']) for button in button_dict
+    ]
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    markup.add(*buttons)
+    product_info = catalog.get_product_info(1)
+    bot.send_message(call.message.chat.id, str(product_info), reply_markup=markup)
+
+@bot.callback_query_handler(func= lambda call: call.data[:6] == "Вперед")
+def next(call):
+    bot.answer_callback_query(call.id, "")
+    catalog = Catalog()
+    product_id = int(call.data[6:]) + 1
+    
+    button_dict = {'Вперед': {'text': 'Вперед', 'callback': f'Вперед{product_id}'}, 'Назад': {'text': 'Назад', 'callback': f'Назад{product_id}'}}
+    if product_id == len(catalog):
+        del button_dict['Вперед']
+    buttons = [
+    types.InlineKeyboardButton(button_dict[button]['text'], callback_data=button_dict[button]['callback']) for button in button_dict
+    ]
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    markup.add(*buttons)
+
+    product_info = catalog.get_product_info(product_id)
+    bot.edit_message_text(text=product_info, chat_id=call.message.chat.id, message_id=call.message.id, reply_markup=markup)
+
+@bot.callback_query_handler(func= lambda call: call.data[:5] == "Назад")
+def previous(call):
+    bot.answer_callback_query(call.id, "")
+    catalog = Catalog()
+    product_id = int(call.data[5:]) - 1
+
+    button_dict = {'Вперед': {'text': 'Вперед', 'callback': f'Вперед{product_id}'}, 'Назад': {'text': 'Назад', 'callback': f'Назад{product_id}'}}
+    if product_id == 1:
+        del button_dict['Назад']
+    buttons = [
+    types.InlineKeyboardButton(button_dict[button]['text'], callback_data=button_dict[button]['callback']) for button in button_dict
+    ]
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    markup.add(*buttons)
+
+    product_info = catalog.get_product_info(product_id)
+    bot.edit_message_text(text=product_info, chat_id=call.message.chat.id, message_id=call.message.id, reply_markup=markup)
+
+bot.polling()'''

@@ -52,7 +52,7 @@ def home():
 @app.route('/<bot_name>7&<bot_token>')
 def bot_edit_page(bot_name, bot_token):
     if session.get('logged_in'):
-        return render_template('new_bot_edit.html')
+        return render_template('bot_edit.html')
     else:
         return redirect(url_for('authorization'))
 
@@ -79,7 +79,7 @@ def show_code(bot_name, bot_token):
 
 @app.route('/<bot_name>7&<bot_token>/ai_chat')
 def ai_chat(bot_name, bot_token):
-    return render_template('bot_new_bot.html')
+    return render_template('chat.html')
 
 @app.route('/<bot_name>7&<bot_token>/ai/gen_bot/<request>')
 def gen_bot_from_ai(bot_name, bot_token, request):
@@ -124,6 +124,15 @@ def add_callback(bot_name, bot_token, command, text):
         return show_code(bot_token)
     else:
         return redirect(url_for('authorization'))
+    
+# @app.route('/<bot_name>7&<bot_token>/add_catalog/<command>7&<handler_type>')
+# def add_callback(bot_name, bot_token, command, handler_type):
+#     if session.get('logged_in'):
+#         bot = BotFile(bot_name, bot_token)
+#         bot.add_catalog(command, handler_type)
+#         return show_code(bot_token)
+#     else:
+#         return redirect(url_for('authorization'))
 
 if __name__ == "__main__":
     app.run()
