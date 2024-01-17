@@ -3,7 +3,7 @@ from neuro_bot import gen_bot_from_request
 from user import User
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify
 
-app = Flask("main", template_folder="src/templates")
+app = Flask("main", template_folder="src/templates", static_folder="src/static")
 
 app.secret_key = 'secret_key_for_session'  # Секретный ключ для сессий
 
@@ -45,7 +45,9 @@ def get_users_bots():
 def home():
     if session.get('logged_in'):
         username = session['username']
-        return render_template('bot_choose.html', username=username)
+        user = User(username)
+        bots_dict = user.get_bots()
+        return render_template('bot_choose.html', username=username, bots_dict=bots_dict)
     else:
         return redirect(url_for('authorization'))
 
