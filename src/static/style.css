@@ -19,8 +19,8 @@
   
   .home-page .ellipse {
     position: absolute;
-    width: 55px;
-    height: 55px;
+    width: 3vh;
+    height: 3vh;
     bottom: 3.3%;
     left: 26px;
     background-color: #62b2ec;
@@ -30,10 +30,10 @@
   .home-page .text-wrapper {
     width: 112px;
     bottom: 5%;
-    left: 97px;
+    left: 4vh;
     font-weight: 400;
     color: #ffffff;
-    font-size: 24px;
+    font-size: 2vh;
     position: absolute;
     font-family: "Inter", Helvetica;
     letter-spacing: 0;
@@ -136,13 +136,13 @@
   .bot-list {
     font-family: "Inter", Helvetica;
     color: white;
-    font-size: 3vh;
+    font-size: 2vh;
     margin-top: 10vh;
     margin-left: 1vw;
     overflow: scroll;
     /* scrollbar-color: black;
     scrollbar-width: 2vw; */
-    height: 75vh;
+    height: 80vh;
     list-style-type:  none;
   }
 
@@ -151,22 +151,20 @@
   }
   
   .bot-list::-webkit-scrollbar-track {
-    background-color: rgb(0, 0, 0);    /* color of the scroll thumb */
+    background-color: #2d2d2d;    /* color of the scroll thumb */
     border-radius: 20px;       /* roundness of the scroll thumb */
     border: 3px solid #2d2d2d;  /* creates padding around scroll thumb */
   }
 
   
-  .bot-list:hover > ::-webkit-scrollbar-thumb {
-    background-color: rgb(0, 0, 0);    /* color of the scroll thumb */
+  .bot-list::-webkit-scrollbar-thumb {
+    background-color: #121212;    /* color of the scroll thumb */
     border-radius: 20px;       /* roundness of the scroll thumb */
     border: 3px solid #2d2d2d;  /* creates padding around scroll thumb */
   }
 
-  .bot-list::-webkit-scrollbar-thumb {
-    background-color: #2d2d2d;    /* color of the scroll thumb */
-    border-radius: 20px;       /* roundness of the scroll thumb */
-    border: 3px solid #2d2d2d;  /* creates padding around scroll thumb */
+  ::-webkit-scrollbar-corner {
+    background: #2d2d2d;
   }
   
   .li {
@@ -179,10 +177,13 @@
   }
 
   .bot-piece {
-    /* background-color:#444444; */
-    /* border-radius: 30px; */
-    margin-top: 10px;
     height: 5vh;
-    text-align: flex-start;
   }
+
+  .bot-piece:hover {
+    background-color:#444444;
+    border-radius: 15px;
+    transition: 0.5s;
+  }
+
   
